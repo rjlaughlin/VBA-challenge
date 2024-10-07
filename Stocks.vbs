@@ -2,7 +2,7 @@ Sub Stocks()
 
 'Dimension All Variables / Turning off Screen Updating
 '------------------------------------------------------
-    Dim rngTicker, rngPercentChange, rngTotalVolume As Range
+    Dim rngTicker, rngPercentChange, rngQuarterlyChange, rngTotalVolume As Range
     Dim strTicker, strMin, strMax, strTickMin, strTickMax, strTickVolume As String
     Dim numOpen, numClose As Double
     Dim numMin, numMax As Variant
@@ -45,15 +45,15 @@ Sub Stocks()
         clnVol = .Cells.Find(What:="<vol>", After:=.Cells(2, 1), LookIn:=xlFormulas2, LookAt _
         :=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlNext, MatchCase:= _
         False, SearchFormat:=False).Column
-        
+
         clnOpen = .Cells.Find(What:="<open>", After:=.Cells(2, 1), LookIn:=xlFormulas2, LookAt _
         :=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlNext, MatchCase:= _
         False, SearchFormat:=False).Column
-        
+
         clnClose = .Cells.Find(What:="<close>", After:=.Cells(2, 1), LookIn:=xlFormulas2, LookAt _
         :=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlNext, MatchCase:= _
         False, SearchFormat:=False).Column
-        
+
         numVolume = 0
         blnStatus = False
         y = 2
@@ -86,6 +86,7 @@ Sub Stocks()
 
 ' Loop to go through Percent Change
 '------------------------------------------------------
+        Set rngQuarterlyChange = .Range(.Cells(2, 10), .Cells(.Cells(2, 10).End(xlDown).Row, 10))
         Set rngPercentChange = .Range(.Cells(2, 11), .Cells(.Cells(2, 11).End(xlDown).Row, 11))
         Set rngTotalVolume = .Range(.Cells(2, 12), .Cells(.Cells(2, 12).End(xlDown).Row, 12))
 
@@ -153,6 +154,26 @@ Sub Stocks()
 '------------------------------------------------------
         .Range(.Cells(1, 10), .Cells(1, 15)).Columns.AutoFit
 
+        rngQuarterlyChange.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+        Formula1:="=0"
+
+        With rngQuarterlyChange.FormatConditions(rngQuarterlyChange.FormatConditions.Count).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = RGB(0, 255, 0)
+        .TintAndShade = 0
+        End With
+
+
+        rngQuarterlyChange.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, _
+        Formula1:="=0"
+
+        With rngQuarterlyChange.FormatConditions(rngQuarterlyChange.FormatConditions.Count).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = RGB(255, 0, 0)
+        .TintAndShade = 0
+        End With
+
+
         rngPercentChange.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
         Formula1:="=0"
 
@@ -161,8 +182,8 @@ Sub Stocks()
         .Color = RGB(0, 255, 0)
         .TintAndShade = 0
         End With
-   
-    
+
+
         rngPercentChange.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, _
         Formula1:="=0"
 
@@ -178,7 +199,7 @@ Sub Stocks()
         ActiveWindow.ScrollRow = 1
         ActiveWindow.ScrollColumn = 1
         .Cells(1, 1).Activate
-    
+
         End With
 
 ' Next worksheet command (i)
@@ -187,5 +208,6 @@ Next i
 
 ThisWorkbook.Sheets(1).Activate
 Application.ScreenUpdating = True
- 
+
 End Sub
+
